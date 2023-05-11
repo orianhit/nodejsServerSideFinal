@@ -12,7 +12,7 @@ const {Users} = require('../model/users.js');
 /* GET home page. */
 router.get('/', function (req, res, next) {
     try {
-        res.render('index', {title: 'Orian And Lital - HIT'});
+        res.status(200).json({title: 'Orian And Lital - HIT'});
     } catch (err) {
         next(err);
     }
