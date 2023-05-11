@@ -13,9 +13,9 @@ const usersSchema = new Schema({
         index: true,
         required: true,
     },
-    first_name: String,
-    last_name: String,
-    birthday: Date,
+    first_name: {type:String, required: true},
+    last_name: {type:String, required: true},
+    birthday: {type:Date, required: true},
 }, { _id: false });
 
 const Users = mongoose.model('Users', usersSchema);

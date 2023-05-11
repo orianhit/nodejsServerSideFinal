@@ -8,6 +8,7 @@ const {isEmpty, InputValidationError} = require('../utils/inputValidations.js');
 const {Costs} = require('../model/costs.js');
 const {Categories} = require('../model/categories.js');
 const {Users} = require('../model/users.js');
+const {format2Digits, currentMonth, currentYear} = require("../utils/date");
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -40,28 +41,15 @@ router.post('/addcost', async function (req, res, next) {
             throw new InputValidationError(`user id ${user_id} does not exists`);
         }
 
-        const cost = await Costs.create(req.body);
-        await Categories.findOneAndUpdate(
-            {
-                user_id: user_id,
-                year: year,
-                month: month,
-                name: category
-            }, {
-                $push: {
-                    categoryCosts: {
-                        day: cost.day,
-                        description: cost.description,
-                        sum: cost.sum
-                    }
-                }
-            },
-            {
-                timestamps: false,
-                upsert: true,
-                new: true
-            }
-        );
+        const cost = await Costs.create({
+            user_id: user_id,
+            description: description,
+            category: category,
+            sum: sum,
+            year: year,
+            month: format2Digits(month),
+            day: format2Digits(day),
+        });
 
         res.json(cost);
     } catch (err) {
@@ -71,7 +59,6 @@ router.post('/addcost', async function (req, res, next) {
 
 router.get('/report', async function (req, res, next) {
     try {
-        let response = [];
         const year = req.query.year;
         const month = req.query.month;
         const user_id = req.query.user_id;
@@ -82,16 +69,41 @@ router.get('/report', async function (req, res, next) {
             }
         })
 
-        for (const category of categoriesOptions) {
-            const categoryObj = await Categories
-                .find({name: category, year: year, month: month, user_id: user_id});
-            if (categoryObj.length !== 0) {
-                response.push({[category]: categoryObj[0].categoryCosts});
-            } else {
-                response.push({[category]: []});
+        let cachedCategory = await Categories.find({year: Number(year), month: Number(month), user_id: user_id});
+
+        if (cachedCategory.length === 0) {
+
+            const costs = await Costs.find({year: Number(year), month: Number(month)});
+            cachedCategory = costs.reduce((groups, cost) => {
+                (groups[cost.category] = groups[cost.category] || []).push({
+                    day: cost.day,
+                    description: cost.description,
+                    sum: cost.sum,
+                });
+                return groups;
+            }, {});
+
+            if (Number(year) !== currentYear() || Number(month) !== currentMonth()) {
+                await Categories.create({
+                    ...cachedCategory,
+                    year: Number(year),
+                    month: Number(month),
+                    user_id: user_id,
+                });
             }
+        } else {
+            cachedCategory = cachedCategory[0];
         }
-        res.json(response);
+
+        res.json({
+            food: cachedCategory.food || [],
+            health: cachedCategory.health || [],
+            housing: cachedCategory.housing || [],
+            sport: cachedCategory.sport || [],
+            education: cachedCategory.education || [],
+            transportation: cachedCategory.transportation || [],
+            other: cachedCategory.other || [],
+        });
     } catch (err) {
         next(err);
     }
