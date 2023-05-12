@@ -22,7 +22,7 @@ router.get('/clear', async function (req, res, next) {
     try {
         await Categories.deleteMany({});
         await Costs.deleteMany({});
-        res.status(200).json({message: 'success'})
+        res.status(200).json({message: 'success'});
     } catch (err) {
         next(err);
     }
@@ -122,7 +122,7 @@ router.get('/about', (req, res, next) => {
         res.json([
             {firstname: 'Orian', lastname: 'Dabod', id: 308337062, email: 'oriandabud@gmail.com'},
             {firstname: 'Lital', lastname: 'Kraft', id: 314806647, email: 'Litalkraft19@gmail.com'},
-        ])
+        ]);
     } catch (err) {
         next(err);
     }

@@ -27,7 +27,7 @@ const categoriesSchema = new Schema({
     user_id: {type: Number, required: true},
 });
 
-categoriesSchema.index({year: 1, month: 1, user_id: 1}, {unique: true})
+categoriesSchema.index({year: 1, month: 1, user_id: 1}, {unique: true});
 
 const Categories = mongoose.model('Categories', categoriesSchema);
 

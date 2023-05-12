@@ -31,7 +31,7 @@ const costsSchema = new Schema({
 
 const Costs = mongoose.model('Costs', costsSchema);
 
-costsSchema.index({year: 1, month: 1, user_id: 1})
+costsSchema.index({year: 1, month: 1, user_id: 1});
 
 module.exports = {
     'costsSchema': costsSchema,

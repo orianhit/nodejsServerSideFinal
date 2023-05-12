@@ -8,7 +8,7 @@ function isEmpty(str) {
 class InputValidationError extends Error {
     constructor(message) {
         super(message); // (1)
-        this.name = "InputValidationError"; // (2)
+        this.name = 'InputValidationError'; // (2)
     }
 }
 
