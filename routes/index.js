@@ -112,7 +112,7 @@ router.get('/report', async function (req, res, next) {
 router.get('/about', (req, res, next) => {
     try {
         res.json([
-            {firstname: 'Orian', lastname: 'Dabod', id: 308337062, email: 'oriangdabud@gmail.com'},
+            {firstname: 'Orian', lastname: 'Dabod', id: 308337062, email: 'oriandabud@gmail.com'},
             {firstname: 'Lital', lastname: 'Kraft', id: 314806647, email: 'Litalkraft19@gmail.com'},
         ])
     } catch (err) {
