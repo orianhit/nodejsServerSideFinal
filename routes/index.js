@@ -19,6 +19,16 @@ router.get('/', function (req, res, next) {
     }
 });
 
+router.get('/clear', async function (req, res, next) {
+    try {
+        await Categories.deleteMany({});
+        await Costs.deleteMany({});
+        res.status(200).json({message: 'success'})
+    } catch (err) {
+        next(err);
+    }
+})
+
 router.post('/addcost', async function (req, res, next) {
     try {
         const user_id = req.body.user_id;
