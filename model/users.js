@@ -13,10 +13,10 @@ const usersSchema = new Schema({
         index: true,
         required: true,
     },
-    first_name: {type:String, required: true},
-    last_name: {type:String, required: true},
-    birthday: {type:Date, required: true},
-}, { _id: false });
+    first_name: {type: String, required: true},
+    last_name: {type: String, required: true},
+    birthday: {type: Date, required: true},
+});
 
 const Users = mongoose.model('Users', usersSchema);
 

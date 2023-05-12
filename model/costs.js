@@ -9,16 +9,16 @@ const {categoriesOptions} = require('../utils/options.js');
 const Schema = mongoose.Schema;
 
 const costsSchema = new Schema({
-    user_id: {type:Number, required: true},
-    year: {type:Number, required: true},
-    month: {type:Number, required: true},
-    day: {type:Number, required: true},
+    user_id: {type: Number, required: true},
+    year: {type: Number, required: true},
+    month: {type: Number, required: true},
+    day: {type: Number, required: true},
     id: {
         type: Number,
         index: true,
         auto: true,
     },
-    description: {type:String, required: true},
+    description: {type: String, required: true},
     category: {
         type: String,
         enum: categoriesOptions,
@@ -31,7 +31,7 @@ const costsSchema = new Schema({
 
 const Costs = mongoose.model('Costs', costsSchema);
 
-costsSchema.index({ year: 1, month: 1 })
+costsSchema.index({year: 1, month: 1, user_id: 1})
 
 module.exports = {
     'costsSchema': costsSchema,

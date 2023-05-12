@@ -11,7 +11,7 @@ const costsSubSchema = new Schema({
     day: Number,
     description: String,
     sum: {type: Number, default: 0},
-}, { _id: false });
+}, {_id: false});
 
 const categoriesSchema = new Schema({
     food: [costsSubSchema],
@@ -22,12 +22,12 @@ const categoriesSchema = new Schema({
     transportation: [costsSubSchema],
     other: [costsSubSchema],
 
-    year: {type:Number, required: true},
-    month: {type:Number, required: true},
-    user_id: {type:Number, required: true},
+    year: {type: Number, required: true},
+    month: {type: Number, required: true},
+    user_id: {type: Number, required: true},
 });
 
-categoriesSchema.index({ year: 1, month: 1, user_id: 1 }, { unique: true })
+categoriesSchema.index({year: 1, month: 1, user_id: 1}, {unique: true})
 
 const Categories = mongoose.model('Categories', categoriesSchema);
 

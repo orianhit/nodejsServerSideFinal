@@ -3,12 +3,11 @@
 
 const express = require('express');
 const router = express.Router();
-const {categoriesOptions} = require('../utils/options.js');
 const {isEmpty, InputValidationError} = require('../utils/inputValidations.js');
 const {Costs} = require('../model/costs.js');
 const {Categories} = require('../model/categories.js');
 const {Users} = require('../model/users.js');
-const {format2Digits, currentMonth, currentYear} = require("../utils/date");
+const {currentMonth, currentYear} = require('../utils/date');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -42,7 +41,7 @@ router.post('/addcost', async function (req, res, next) {
         [['year', year], ['month', month], ['day', day], ['category', category], ['sum', sum],
             ['user_id', user_id], ['description', description]].forEach(function (field) {
             if (isEmpty(field[1])) {
-                throw new inputValidations.InputValidationError(`missing field ${field[0]}`);
+                throw new InputValidationError(`missing field ${field[0]}`);
             }
         })
 
@@ -57,8 +56,8 @@ router.post('/addcost', async function (req, res, next) {
             category: category,
             sum: sum,
             year: year,
-            month: format2Digits(month),
-            day: format2Digits(day),
+            month: month,
+            day: day,
         });
 
         res.json(cost);
@@ -82,8 +81,7 @@ router.get('/report', async function (req, res, next) {
         let cachedCategory = await Categories.find({year: Number(year), month: Number(month), user_id: user_id});
 
         if (cachedCategory.length === 0) {
-
-            const costs = await Costs.find({year: Number(year), month: Number(month)});
+            const costs = await Costs.find({year: Number(year), month: Number(month), user_id: Number(user_id)});
             cachedCategory = costs.reduce((groups, cost) => {
                 (groups[cost.category] = groups[cost.category] || []).push({
                     day: cost.day,

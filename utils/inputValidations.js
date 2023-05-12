@@ -2,7 +2,7 @@
 // Lital Kraft 314806647
 
 function isEmpty(str) {
-    return (!str || str.length === 0 );
+    return (!str || str.length === 0);
 }
 
 class InputValidationError extends Error {
