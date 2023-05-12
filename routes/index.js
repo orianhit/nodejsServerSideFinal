@@ -78,6 +78,12 @@ router.get('/report', async function (req, res, next) {
             }
         })
 
+        const isUserIdExists = await Users.find({id: user_id});
+        if (isUserIdExists.length === 0) {
+            throw new InputValidationError(`user id ${user_id} does not exists`);
+        }
+
+
         let cachedCategory = await Categories.find({year: Number(year), month: Number(month), user_id: user_id});
 
         if (cachedCategory.length === 0) {
