@@ -31,7 +31,7 @@ const reportsSchema = new Schema({
 reportsSchema.index({year: 1, month: 1, user_id: 1}, {unique: true});
 
 // Create a model for the categories collection.
-const Reports = mongoose.model('Categories', reportsSchema);
+const Reports = mongoose.model('reports', reportsSchema);
 
 // Export the categoriesSchema and Reports objects.
 module.exports = {
