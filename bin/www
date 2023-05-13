@@ -85,21 +85,29 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
+// Define an async function that is called when the server starts listening.
 async function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+
+  // Get the server's address.
+  const addr = server.address();
+
+  // Convert the address to a string.
+  const bind = typeof addr === 'string'
+      ? 'pipe ' + addr
+      : 'port ' + addr.port;
+
+  // Log the address to the console.
   debug('Listening on ' + bind);
 
-  await usersModel.Users.findOneAndUpdate(
-      {id: 123123},
+  // Find the user with the ID 123123 in the usersModel collection.
+  const user = await usersModel.Users.findOneAndUpdate(
+      { id: 123123 },
       {
         $setOnInsert: {
           id: 123123,
           first_name: 'moshe',
           last_name: 'israeli',
-          birthday: Date(1990, 1, 10),
+          birthday: new Date(1990, 1, 10),
         }
       },
       {
@@ -108,4 +116,10 @@ async function onListening() {
         new: true
       }
   );
+
+  // If the user was found, log their name to the console.
+  if (user) {
+    debug('User found: ' + user.first_name + ' ' + user.last_name);
+  }
 }
+

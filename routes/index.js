@@ -3,9 +3,9 @@
 
 const express = require('express');
 const router = express.Router();
-const {isEmpty, InputValidationError} = require('../utils/inputValidations.js');
+const {isEmpty, InputValidationError} = require('../utils/inputs.js');
 const {Costs} = require('../model/costs.js');
-const {Categories} = require('../model/categories.js');
+const {Reports} = require('../model/reports.js');
 const {Users} = require('../model/users.js');
 const {currentMonth, currentYear} = require('../utils/date');
 
@@ -20,7 +20,7 @@ router.get('/', function (req, res, next) {
 
 router.get('/clear', async function (req, res, next) {
     try {
-        await Categories.deleteMany({});
+        await Reports.deleteMany({});
         await Costs.deleteMany({});
         res.status(200).json({message: 'success'})
     } catch (err) {
@@ -84,7 +84,7 @@ router.get('/report', async function (req, res, next) {
         }
 
 
-        let cachedCategory = await Categories.find({year: Number(year), month: Number(month), user_id: user_id});
+        let cachedCategory = await Reports.find({year: Number(year), month: Number(month), user_id: user_id});
 
         if (cachedCategory.length === 0) {
             const costs = await Costs.find({year: Number(year), month: Number(month), user_id: Number(user_id)});
@@ -98,7 +98,7 @@ router.get('/report', async function (req, res, next) {
             }, {});
 
             if (Number(year) !== currentYear() || Number(month) !== currentMonth()) {
-                await Categories.create({
+                await Reports.create({
                     ...cachedCategory,
                     year: Number(year),
                     month: Number(month),

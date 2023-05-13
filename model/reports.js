@@ -1,19 +1,19 @@
 // Orian Dabod 308337062
 // Lital Kraft 314806647
 
-// Require Mongoose
+// Import the mongoose module.
 const mongoose = require('mongoose');
-
-// Define a schema
 const Schema = mongoose.Schema;
 
+// Define a schema for a costs subdocument.
 const costsSubSchema = new Schema({
     day: Number,
     description: String,
     sum: {type: Number, default: 0},
 }, {_id: false});
 
-const categoriesSchema = new Schema({
+// Define a schema for a categories document.
+const reportsSchema = new Schema({
     food: [costsSubSchema],
     health: [costsSubSchema],
     housing: [costsSubSchema],
@@ -27,11 +27,14 @@ const categoriesSchema = new Schema({
     user_id: {type: Number, required: true},
 });
 
-categoriesSchema.index({year: 1, month: 1, user_id: 1}, {unique: true})
+// Add an index to the categories collection that is unique on the year, month, and user_id fields.
+reportsSchema.index({year: 1, month: 1, user_id: 1}, {unique: true})
 
-const Categories = mongoose.model('Categories', categoriesSchema);
+// Create a model for the categories collection.
+const Reports = mongoose.model('Categories', reportsSchema);
 
+// Export the categoriesSchema and Reports objects.
 module.exports = {
-    'categoriesSchema': categoriesSchema,
-    'Categories': Categories,
+    'reportsSchema': reportsSchema,
+    'Reports': Reports,
 }

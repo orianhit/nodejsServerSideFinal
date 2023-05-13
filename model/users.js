@@ -1,12 +1,11 @@
 // Orian Dabod 308337062
 // Lital Kraft 314806647
 
-// Require Mongoose
+// Import the mongoose module.
 const mongoose = require('mongoose');
-
-// Define a schema
 const Schema = mongoose.Schema;
 
+// Define a schema for a user document.
 const usersSchema = new Schema({
     id: {
         type: Number,
@@ -18,8 +17,10 @@ const usersSchema = new Schema({
     birthday: {type: Date, required: true},
 });
 
+// Create a model for the users collection.
 const Users = mongoose.model('Users', usersSchema);
 
+// Export the usersSchema and Users objects.
 module.exports = {
     'usersSchema': usersSchema,
     'Users': Users,
