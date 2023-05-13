@@ -10,7 +10,7 @@ function isEmpty(str) {
 class InputValidationError extends Error {
     constructor(message) {
         super(message);
-        this.name = "InputValidationError";
+        this.name = 'InputValidationError';
     }
 }
 

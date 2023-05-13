@@ -10,7 +10,7 @@
 var app = require('../app');
 var debug = require('debug')('hitserversidefinalproject:server');
 var http = require('http');
-const usersModel = require("../model/users");
+const usersModel = require('../model/users');
 
 /**
  * Get port from environment and store in Express.

@@ -28,7 +28,7 @@ const reportsSchema = new Schema({
 });
 
 // Add an index to the categories collection that is unique on the year, month, and user_id fields.
-reportsSchema.index({year: 1, month: 1, user_id: 1}, {unique: true})
+reportsSchema.index({year: 1, month: 1, user_id: 1}, {unique: true});
 
 // Create a model for the categories collection.
 const Reports = mongoose.model('Categories', reportsSchema);
