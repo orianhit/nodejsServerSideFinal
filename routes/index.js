@@ -180,7 +180,7 @@ router.get('/about', (req, res, next) => {
             },
         ];
         // Send the user information to the client.
-        res.json(users);
+        res.json(creators);
     } catch (err) {
         // Log the error.
         console.error(err);
