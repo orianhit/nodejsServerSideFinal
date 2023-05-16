@@ -79,7 +79,16 @@ router.post('/addcost', async function (req, res, next) {
         });
 
         // Send the cost document to the client.
-        res.status(201).json(cost);
+        res.status(201).json({
+            id: cost.id,
+            user_id: cost.user_id,
+            year: cost.year,
+            month: cost.month,
+            day: cost.day,
+            description: cost.description,
+            category: cost.category,
+            sum: cost.sum
+        });
     } catch (err) {
         // Log the error.
         console.error(err);
