@@ -17,7 +17,7 @@ const costsSchema = new Schema({
     id: {
         type: Number,
         index: true,
-        auto: true,
+        unique: true,
     },
     description: {type: String, required: true},
     category: {
@@ -26,7 +26,12 @@ const costsSchema = new Schema({
         default: 'other',
         index: true,
     },
-    sum: {type: Number, default: 0},
+    sum: {type: Number, required: true},
+});
+
+costsSchema.method("toJSON", function() {
+    const { __v, _id, ...object } = this.toObject();
+    return object;
 });
 
 // Create a model for the costs collection.

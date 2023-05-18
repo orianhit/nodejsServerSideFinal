@@ -2,12 +2,13 @@
 // Lital Kraft 314806647
 
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const {isEmpty, InputValidationError} = require('../utils/inputs.js');
+const {getNextSequence} = require('../utils/mongo.js');
 const {Costs} = require('../model/costs.js');
 const {Reports} = require('../model/reports.js');
 const {Users} = require('../model/users.js');
-const {currentMonth, currentYear} = require('../utils/date');
 
 // Define a route that responds to GET requests to the / path.
 router.get('/', function (req, res, next) {
@@ -67,28 +68,46 @@ router.post('/addcost', async function (req, res, next) {
             throw new InputValidationError(`user id ${user_id} does not exists`);
         }
 
-        // Create a new cost document in the database.
-        const cost = await Costs.create({
-            user_id: user_id,
-            description: description,
-            category: category,
-            sum: sum,
-            year: year,
-            month: month,
-            day: day,
-        });
+        const session = await mongoose.startSession();
 
-        // Send the cost document to the client.
-        res.status(201).json({
-            id: cost.id,
-            user_id: cost.user_id,
-            year: cost.year,
-            month: cost.month,
-            day: cost.day,
-            description: cost.description,
-            category: cost.category,
-            sum: cost.sum
-        });
+        session.startTransaction();
+
+        try {
+            // Create a new cost document in the database.
+            const cost = await Costs.create({
+                id: await getNextSequence('costs'),
+                user_id: user_id,
+                description: description,
+                category: category,
+                sum: sum,
+                year: year,
+                month: month,
+                day: day,
+            });
+
+            //  Delete computed result for this month
+            await Reports.deleteOne({
+                year: year,
+                month: month,
+                user_id: user_id
+            })
+
+            // Commit the changes
+            await session.commitTransaction();
+
+            // Send the cost document to the client.
+            res.status(201).json(cost);
+        } catch (error) {
+            // Rollback any changes made in the database
+            await session.abortTransaction();
+
+            // Rethrow the error
+            throw error;
+        } finally {
+            // Ending the session
+            session.endSession();
+        }
+
     } catch (err) {
         // Log the error.
         console.error(err);
@@ -120,16 +139,16 @@ router.get('/report', async function (req, res, next) {
         }
 
         // Get the cached report for the given year, month, and user ID.
-        let cachedCategory = await Reports.findOne({year: Number(year), month: Number(month), user_id: user_id});
+        let cachedReport = await Reports.findOne({year: Number(year), month: Number(month), user_id: user_id});
 
         // If there is no cached report, create a new one.
-        if (!cachedCategory) {
+        if (!cachedReport) {
 
             // Get the costs for the given year, month, and user ID.
             const costs = await Costs.find({year: Number(year), month: Number(month), user_id: Number(user_id)});
 
             // Create a new report from the costs.
-            cachedCategory = costs.reduce((groups, cost) => {
+            cachedReport = costs.reduce((groups, cost) => {
                 (groups[cost.category] = groups[cost.category] || []).push({
                     day: cost.day,
                     description: cost.description,
@@ -138,27 +157,25 @@ router.get('/report', async function (req, res, next) {
                 return groups;
             }, {});
 
-            // If the report is not of the current year and month, create it in the database.
-            if (Number(year) !== currentYear() || Number(month) !== currentMonth()) {
-                await Reports.create({
-                    ...cachedCategory,
-                    year: Number(year),
-                    month: Number(month),
-                    user_id: user_id,
-                });
-            }
+            // Create Report in the database.
+            await Reports.create({
+                ...cachedReport,
+                year: Number(year),
+                month: Number(month),
+                user_id: user_id,
+            });
         }
 
         // Send the report to the client.
         // Setting empty array if category not in document AKA no cost exists
         res.json({
-            food: cachedCategory.food || [],
-            health: cachedCategory.health || [],
-            housing: cachedCategory.housing || [],
-            sport: cachedCategory.sport || [],
-            education: cachedCategory.education || [],
-            transportation: cachedCategory.transportation || [],
-            other: cachedCategory.other || [],
+            food: cachedReport.food || [],
+            health: cachedReport.health || [],
+            housing: cachedReport.housing || [],
+            sport: cachedReport.sport || [],
+            education: cachedReport.education || [],
+            transportation: cachedReport.transportation || [],
+            other: cachedReport.other || [],
         });
     } catch (err) {
         // Log the error.
