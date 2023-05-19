@@ -9,6 +9,7 @@ const {getNextSequence} = require('../utils/mongo.js');
 const {Costs} = require('../model/costs.js');
 const {Reports} = require('../model/reports.js');
 const {Users} = require('../model/users.js');
+const {Counters} = require("../model/counters");
 
 // Define a route that responds to GET requests to the / path.
 router.get('/', function (req, res, next) {
@@ -30,6 +31,7 @@ router.get('/clear', async function (req, res, next) {
     try {
         await Reports.deleteMany({});
         await Costs.deleteMany({});
+        await Counters.deleteMany({});
 
         // Send a success message to the client.
         res.status(200).json({message: 'success'});
