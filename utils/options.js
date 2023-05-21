@@ -6,5 +6,5 @@ const categoriesOptions = ['food', 'health', 'housing', 'sport', 'education', 't
 
 // Export the categoriesOptions object.
 module.exports = {
-    'categoriesOptions': categoriesOptions
+  categoriesOptions,
 };

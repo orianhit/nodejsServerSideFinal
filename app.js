@@ -8,7 +8,7 @@ const mongo = require('mongodb');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const inputValidations = require('./utils/inputs.js');
+const inputValidations = require('./utils/inputs');
 
 // Load the .env file.
 require('dotenv').config();
@@ -28,7 +28,7 @@ mongoose.Promise = global.Promise;
 // Configure the express app.
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -37,28 +37,30 @@ app.use('/', indexRouter);
 
 // Create a custom error handler that handles errors from mongoose, mongo, and inputValidations.
 app.use(function (err, req, res, next) {
-    if (err instanceof mongoose.Error) {
-        return res.status(400).json({error: err.message});
-    } else if (err instanceof mongo.MongoError) {
-        return res.status(400).json({error: err.message});
-    } else if (err instanceof inputValidations.InputValidationError) {
-        return res.status(400).json({error: err.message});
-    }
-    // Pass the error to the default error handler.
-    return next(err);
+  if (err instanceof mongoose.Error) {
+    return res.status(400).json({ error: err.message });
+  }
+  if (err instanceof mongo.MongoError) {
+    return res.status(400).json({ error: err.message });
+  }
+  if (err instanceof inputValidations.InputValidationError) {
+    return res.status(400).json({ error: err.message });
+  }
+  // Pass the error to the default error handler.
+  return next(err);
 });
 
 // Create a custom error handler that handles 404 errors.
-app.use(function (req, res, next) {
-    res.status(404).json({message: 'Invalid path'});
+app.use(function (req, res) {
+  res.status(404).json({ message: 'Invalid path' });
 });
 
 // Create a custom error handler that handles all other errors.
-app.use(function (err, req, res, next) {
-    res.status(err.status || 500).json({
-        message: err.message,
-        error: req.app.get('env') === 'development' ? err : {}
-    });
+app.use(function (err, req, res) {
+  res.status(err.status || 500).json({
+    message: err.message,
+    error: req.app.get('env') === 'development' ? err : {},
+  });
 });
 
 // Export the app.
