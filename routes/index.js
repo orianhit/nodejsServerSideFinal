@@ -28,7 +28,7 @@ router.get('/', function (req, res, next) {
 
 // Define a route that responds to GET requests to the /clear path.
 router.get('/clear', async function (req, res, next) {
-  // Try to delete all reports and costs from the database.
+  // Try to delete all reports, costs and counters from the database.
   try {
     await Reports.deleteMany({});
     await Costs.deleteMany({});
@@ -72,7 +72,7 @@ router.post('/addcost', async function (req, res, next) {
     }
 
     const session = await mongoose.startSession();
-
+    // start new transaction, in order to clear cache and create cost simultaneously
     session.startTransaction();
 
     try {
@@ -137,7 +137,7 @@ router.get('/report', async function (req, res, next) {
     // Check if the user exists in the database.
     const isUserIdExists = await Users.find({ id: userId });
     if (isUserIdExists.length === 0) {
-      throw new InputValidationError(`user id ${userId} does not exists`);
+      throw new InputValidationError(`user id ${userId} does not exist`);
     }
 
     // Get the cached report for the given year, month, and user ID.
