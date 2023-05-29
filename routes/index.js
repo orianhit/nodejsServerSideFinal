@@ -61,7 +61,7 @@ router.post('/addcost', async function (req, res, next) {
     [['year', year], ['month', month], ['day', day], ['category', category], ['sum', sum],
       ['user_id', userId], ['description', description]].forEach(function (field) {
       if (isEmpty(field[1])) {
-        throw new InputValidationError(`missing field ${field[0]}`);
+        throw new InputValidationError(`Missing field ${field[0]}`);
       }
     });
 
@@ -71,7 +71,7 @@ router.post('/addcost', async function (req, res, next) {
     // Check if the user exists in the database.
     const isUserIdExists = await Users.find({ id: userId });
     if (isUserIdExists.length === 0) {
-      throw new InputValidationError(`user id ${userId} does not exists`);
+      throw new InputValidationError(`User id ${userId} does not exists`);
     }
 
     const session = await mongoose.startSession();
@@ -133,7 +133,7 @@ router.get('/report', async function (req, res, next) {
     // Validate that the year, month, and user ID are not empty.
     [['year', year], ['month', month], ['user_id', userId]].forEach(function (field) {
       if (isEmpty(field[1])) {
-        throw new InputValidationError(`missing field ${field[0]}`);
+        throw new InputValidationError(`Missing field ${field[0]}`);
       }
     });
 
