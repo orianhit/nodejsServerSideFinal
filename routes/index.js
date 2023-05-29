@@ -5,7 +5,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const router = express.Router();
-const { isEmpty, InputValidationError } = require('../utils/inputs');
+const { isEmpty, InputValidationError, validateInput } = require('../utils/inputs');
 const { getNextSequence } = require('../utils/mongo');
 const { Costs } = require('../model/costs');
 const { Reports } = require('../model/reports');
@@ -64,6 +64,9 @@ router.post('/addcost', async function (req, res, next) {
         throw new InputValidationError(`missing field ${field[0]}`);
       }
     });
+
+    // validate date params are in valid range, and user exists in db
+    await validateInput(userId, year, month, day);
 
     // Check if the user exists in the database.
     const isUserIdExists = await Users.find({ id: userId });
@@ -134,11 +137,8 @@ router.get('/report', async function (req, res, next) {
       }
     });
 
-    // Check if the user exists in the database.
-    const isUserIdExists = await Users.find({ id: userId });
-    if (isUserIdExists.length === 0) {
-      throw new InputValidationError(`user id ${userId} does not exist`);
-    }
+    // validate date params are in valid range, and user exists in db
+    await validateInput(userId, year, month);
 
     // Get the cached report for the given year, month, and user ID.
     let cachedReport = await Reports.findOne({

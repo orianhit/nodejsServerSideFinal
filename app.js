@@ -37,13 +37,11 @@ app.use('/', indexRouter);
 
 // Create a custom error handler that handles errors from mongoose, mongo, and inputValidations.
 app.use(function (err, req, res, next) {
-  if (err instanceof mongoose.Error) {
-    return res.status(400).json({ error: err.message });
-  }
-  if (err instanceof mongo.MongoError) {
-    return res.status(400).json({ error: err.message });
-  }
-  if (err instanceof inputValidations.InputValidationError) {
+  if ([
+    mongoose.Error,
+    mongo.MongoError,
+    inputValidations.InputValidationError,
+  ].includes(err.constructor)) {
     return res.status(400).json({ error: err.message });
   }
   // Pass the error to the default error handler.
