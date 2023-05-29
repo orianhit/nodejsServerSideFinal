@@ -18,18 +18,35 @@ class InputValidationError extends Error {
 
 async function validateInput(userId, year, month, day) {
   // if year param passed, check if in valid range
-  if (year && (year > 2023 || year < 1900)) {
-    throw new InputValidationError('year should be between 2023 and 1900');
+  if (year) {
+    if (isNaN(parseInt(year))) {
+      throw new InputValidationError('year should be number');
+    }
+    if (year > 2023 || year < 1900) {
+      throw new InputValidationError('year should be between 2023 and 1900');
+    }
   }
 
   // if month param passed, check if in valid range
-  if (month && (month > 12 || month < 1)) {
-    throw new InputValidationError('month should be between 1 and 12');
+  if (month) {
+    if (isNaN(parseInt(month))) {
+      throw new InputValidationError('year should be number');
+    }
+    if (month > 12 || month < 1) {
+      throw new InputValidationError('month should be between 1 and 12');
+
+    }
+
   }
 
   // if day param passed, check if in valid range
-  if (day && (day > 31 || day < 1)) {
-    throw new InputValidationError('day should be between 1 and 31');
+  if (day) {
+    if (isNaN(parseInt(day))) {
+      throw new InputValidationError('year should be number');
+    }
+    if(day > 31 || day < 1)) {
+      throw new InputValidationError('day should be between 1 and 31');
+    }
   }
 
   // Check if the user exists in the database.
