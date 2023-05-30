@@ -40,6 +40,7 @@ app.use(function (err, req, res, next) {
   if ([
     mongoose.Error,
     mongo.MongoError,
+    mongoose.Error.ValidationError,
     inputValidations.InputValidationError,
   ].includes(err.constructor)) {
     return res.status(400).json({ error: err.message });
