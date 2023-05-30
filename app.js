@@ -45,13 +45,10 @@ app.use(function (err, req, res, next) {
   ].includes(err.constructor)) {
     return res.status(400).json({ error: err.message });
   }
-  // Pass the error to the default error handler.
-  return next(err);
-});
 
-// Create a custom error handler that handles 404 errors.
-app.use(function (req, res) {
-  res.status(404).json({ message: 'Invalid path' });
+  return res.status(err.status || 500).json({
+    error: err.message,
+  });
 });
 
 // Create a custom error handler that handles all other errors.
@@ -60,6 +57,11 @@ app.use(function (err, req, res) {
     message: err.message,
     error: req.app.get('env') === 'development' ? err : {},
   });
+});
+
+// Create a custom error handler that handles 404 errors.
+app.use(function (req, res) {
+  res.status(404).json({ message: 'Invalid path' });
 });
 
 // Export the app.
