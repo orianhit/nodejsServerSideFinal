@@ -36,7 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 
 // Create a custom error handler that handles errors from mongoose, mongo, and inputValidations.
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res, _) {
   if ([
     mongoose.Error,
     mongo.MongoError,
@@ -48,14 +48,6 @@ app.use(function (err, req, res, next) {
 
   return res.status(err.status || 500).json({
     error: err.message,
-  });
-});
-
-// Create a custom error handler that handles all other errors.
-app.use(function (err, req, res) {
-  res.status(err.status || 500).json({
-    message: err.message,
-    error: req.app.get('env') === 'development' ? err : {},
   });
 });
 
