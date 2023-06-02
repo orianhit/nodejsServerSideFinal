@@ -100,7 +100,7 @@ async function onListening() {
   debug('Listening on ' + bind);
 
   // Find the user with the ID 123123 in the usersModel collection.
-  const user = await usersModel.Users.findOneAndUpdate(
+  const user = await usersModel.users.findOneAndUpdate(
       { id: 123123 },
       {
         $setOnInsert: {

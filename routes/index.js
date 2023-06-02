@@ -7,10 +7,10 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const { isEmpty, InputValidationError, validateInput } = require('../utils/inputs');
 const { getNextSequence } = require('../utils/mongo');
-const { Costs } = require('../model/costs');
-const { Reports } = require('../model/reports');
-const { Users } = require('../model/users');
-const { Counters } = require('../model/counters');
+const { costs } = require('../model/costs');
+const { reports } = require('../model/reports');
+const { users } = require('../model/users');
+const { counters } = require('../model/counters');
 
 // Define a route that responds to GET requests to the / path.
 router.get('/', function (req, res, next) {
@@ -30,9 +30,9 @@ router.get('/', function (req, res, next) {
 router.get('/clear', async function (req, res, next) {
   // Try to delete all reports, costs and counters from the database.
   try {
-    await Reports.deleteMany({});
-    await Costs.deleteMany({});
-    await Counters.deleteMany({});
+    await reports.deleteMany({});
+    await costs.deleteMany({});
+    await counters.deleteMany({});
 
     // Send a success message to the client.
     res.status(200).json({ message: 'success' });
@@ -69,7 +69,7 @@ router.post('/addcost', async function (req, res, next) {
     await validateInput(userId, year, month, day);
 
     // Check if the user exists in the database.
-    const isUserIdExists = await Users.find({ id: userId });
+    const isUserIdExists = await users.find({ id: userId });
     if (isUserIdExists.length === 0) {
       throw new InputValidationError(`User id ${userId} does not exists`);
     }
@@ -80,7 +80,7 @@ router.post('/addcost', async function (req, res, next) {
 
     try {
       // Create a new cost document in the database.
-      const cost = await Costs.create({
+      const cost = await costs.create({
         id: await getNextSequence('costs'),
         user_id: userId,
         description,
@@ -92,7 +92,7 @@ router.post('/addcost', async function (req, res, next) {
       });
 
       //  Delete computed result for this month
-      await Reports.deleteOne({
+      await reports.deleteOne({
         year,
         month,
         user_id: userId,
@@ -141,7 +141,7 @@ router.get('/report', async function (req, res, next) {
     await validateInput(userId, year, month);
 
     // Get the cached report for the given year, month, and user ID.
-    let cachedReport = await Reports.findOne({
+    let cachedReport = await reports.findOne({
       year: Number(year),
       month: Number(month),
       user_id: userId,
@@ -150,7 +150,7 @@ router.get('/report', async function (req, res, next) {
     // If there is no cached report, create a new one.
     if (!cachedReport) {
       // Get the costs for the given year, month, and user ID.
-      const costs = await Costs.find({
+      const costs = await costs.find({
         year: Number(year),
         month: Number(month),
         user_id: Number(userId),
@@ -167,7 +167,7 @@ router.get('/report', async function (req, res, next) {
       }, {});
 
       // Create Report in the database.
-      await Reports.create({
+      await reports.create({
         ...cachedReport,
         year: Number(year),
         month: Number(month),

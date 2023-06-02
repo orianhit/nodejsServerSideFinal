@@ -2,7 +2,7 @@
 // Lital Kraft 314806647
 
 // Define a function that checks if a string is empty.
-const { Users } = require('../model/users');
+const { users } = require('../model/users');
 
 function isEmpty(str) {
   return (!str || str.length === 0);
@@ -49,7 +49,7 @@ async function validateInput(userId, year, month, day) {
 
   // Check if the user exists in the database.
   if (userId) {
-    const isUserIdExists = await Users.find({ id: userId });
+    const isUserIdExists = await users.find({ id: userId });
     if (isUserIdExists.length === 0) {
       throw new InputValidationError(`User id ${userId} does not exist`);
     }

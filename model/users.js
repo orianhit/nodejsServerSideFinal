@@ -24,11 +24,11 @@ const usersSchema = new Schema({
   // Field representing the birthday of the user. It is of type Date and is required.
 });
 
-// Create a model for the users collection.
-const Users = mongoose.model('Users', usersSchema);
+// Create a model for the user collection.
+const users = mongoose.model('Users', usersSchema);
 
 // Export the usersSchema and Users objects.
 module.exports = {
   usersSchema,
-  Users,
+  users,
 };
