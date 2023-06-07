@@ -149,15 +149,15 @@ router.get('/report', async function (req, res, next) {
 
     // If there is no cached report, create a new one.
     if (!cachedReport) {
-      // Get the costs for the given year, month, and user ID.
-      const costs = await costs.find({
+      // Get the currentCosts for the given year, month, and user ID.
+      const currentCosts = await costs.find({
         year: Number(year),
         month: Number(month),
         user_id: Number(userId),
       });
 
-      // Create a new report from the costs.
-      cachedReport = costs.reduce(function (groups, cost) {
+      // Create a new report from the currentCosts.
+      cachedReport = currentCosts.reduce(function (groups, cost) {
         (groups[cost.category] = groups[cost.category] || []).push({
           day: cost.day,
           description: cost.description,
