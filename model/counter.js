@@ -17,10 +17,10 @@ const countersSchema = new Schema({
 });
 
 // Create a model for the counter collection.
-const counters = mongoose.model('Counters', countersSchema);
+const Counter = mongoose.model('Counters', countersSchema);
 
 // Export the CountersSchema and Counters objects.
 module.exports = {
   countersSchema,
-  counters,
+  Counter,
 };

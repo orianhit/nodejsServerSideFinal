@@ -25,10 +25,10 @@ const usersSchema = new Schema({
 });
 
 // Create a model for the user collection.
-const users = mongoose.model('Users', usersSchema);
+const User = mongoose.model('Users', usersSchema);
 
 // Export the usersSchema and Users objects.
 module.exports = {
   usersSchema,
-  users,
+  User: User,
 };

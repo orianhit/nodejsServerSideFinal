@@ -46,7 +46,7 @@ costsSchema.method('toJSON', function () {
 });
 
 // Create a model for the cost collection using the defined schema.
-const costs = mongoose.model('Costs', costsSchema);
+const Cost = mongoose.model('Costs', costsSchema);
 
 // Add an index to the cost collection that is unique on the year, month, and user_id fields.
 costsSchema.index({ year: 1, month: 1, user_id: 1 });
@@ -54,5 +54,5 @@ costsSchema.index({ year: 1, month: 1, user_id: 1 });
 // Export the costsSchema and Costs objects for use in other modules.
 module.exports = {
   costsSchema,
-  costs,
+  Cost,
 };

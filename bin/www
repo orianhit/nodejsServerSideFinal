@@ -10,7 +10,7 @@
 const app = require('../app');
 const debug = require('debug')('hitserversidefinalproject:server');
 const http = require('http');
-const usersModel = require('../model/users');
+const usersModel = require('../model/user');
 
 /**
  * Get port from environment and store in Express.
@@ -100,7 +100,7 @@ async function onListening() {
   debug('Listening on ' + bind);
 
   // Find the user with the ID 123123 in the usersModel collection.
-  const user = await usersModel.users.findOneAndUpdate(
+  const user = await usersModel.User.findOneAndUpdate(
       { id: 123123 },
       {
         $setOnInsert: {

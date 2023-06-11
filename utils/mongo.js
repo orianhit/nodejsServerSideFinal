@@ -1,9 +1,9 @@
-const { counters } = require('../model/counters');
+const { Counter } = require('../model/counter');
 
 // implementing the pattern in https://www.mongodb.com/docs/v2.2/tutorial/create-an-auto-incrementing-field/
 // in order to force unique id (number)
 async function getNextSequence(name) {
-  const ret = await counters.findOneAndUpdate({ _id: name }, {
+  const ret = await Counter.findOneAndUpdate({ _id: name }, {
     $inc: { seq: 1 },
     $set: { _id: name },
   }, { upsert: true });
