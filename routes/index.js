@@ -10,40 +10,6 @@ const { getNextSequence } = require('../utils/mongo');
 const { Cost } = require('../model/cost');
 const { Report } = require('../model/report');
 const { User } = require('../model/user');
-const { Counter } = require('../model/counter');
-
-// Define a route that responds to GET requests to the / path.
-router.get('/', function (req, res, next) {
-  try {
-    // Send the title of the website to the client.
-    res.status(200).json({ title: 'Orian And Lital - HIT' });
-  } catch (err) {
-    // Log the error.
-    console.error(err);
-
-    // Pass the error to the next middleware.
-    next(err);
-  }
-});
-
-// Define a route that responds to GET requests to the /clear path.
-router.get('/clear', async function (req, res, next) {
-  // Try to delete all reports, costs and counters from the database.
-  try {
-    await Report.deleteMany({});
-    await Cost.deleteMany({});
-    await Counter.deleteMany({});
-
-    // Send a success message to the client.
-    res.status(200).json({ message: 'success' });
-  } catch (err) {
-    // Log the error.
-    console.error(err);
-
-    // Pass the error to the next middleware.
-    next(err);
-  }
-});
 
 // Define a route that responds to POST requests to the /addcost path.
 router.post('/addcost', async function (req, res, next) {
